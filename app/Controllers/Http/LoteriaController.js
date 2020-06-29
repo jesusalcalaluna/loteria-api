@@ -1,4 +1,8 @@
 'use strict'
+const { validate } = use("Validator");
+const User = use("App/Models/User");
+const Hash = use("Hash");
+const Database = use("Database");
 
 class LoteriaController {
 
@@ -98,12 +102,68 @@ class LoteriaController {
       console.log(room, data);
     });
 
-
-
-
-
-
   }
+
+  async login({ request, auth, response }) {
+    const { user, password } = request.all();
+
+
+    const validation = await validate(request.all(), {
+      user: "required",
+      password: "required",
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ message: validation.messages() });
+    }
+
+    const userFound = await User.findBy("user", user);
+    if (!userFound) {
+      return response.status(400).send({ message: "No existe este usuario" });
+    }
+
+
+    const isSame = Hash.verify(password, userFound.password);
+    if (!isSame) {
+      return response.status(400).send("Contraseña incorrecta");
+    }
+
+        try {
+            const token = await auth.attempt(user, password);
+            return response.status(200).send({ 'message': "Ok", data: {token, user} });
+        } catch (error) {
+            return response.status(400).send({ status:'error', 'message': error });
+        }
+  }
+
+  async signup({ request, response }) {
+    const { user, password} = request.all();
+    console.log(user, password);
+    const validation = await validate(request.all(), {
+        user: 'required',
+        password: 'required|min:5'
+    });
+
+    if (validation.fails()) {
+        return response.status(400).send({ message: validation.messages() })
+    }
+
+    const userFound = await User.findBy("user", user);
+    if (userFound) {
+        return response.send({
+            status:'error' , message: 'Ya existe un usuario creado con ese usuario.'
+        });
+    }
+
+    const userBD = await User.create({
+        user,
+        password
+    });
+
+    return this.login(...arguments);
+
+    //return response.status(200).send({message:'Has creado tu usuario con exito.'})
+}
 }
 
 module.exports = LoteriaController

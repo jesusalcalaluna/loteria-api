@@ -1,5 +1,7 @@
 'use strict'
 
+const LoteriaController = require('../app/Controllers/Http/LoteriaController')
+
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -19,5 +21,8 @@ const Route = use('Route')
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })
+
+Route.post('login', 'LoteriaController.login');
+Route.post('signup', 'LoteriaController.signup');
 
 
