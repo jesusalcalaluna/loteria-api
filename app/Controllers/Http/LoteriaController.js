@@ -130,7 +130,7 @@ class LoteriaController {
 
         try {
             const token = await auth.attempt(user, password);
-            return response.status(200).send({ 'message': "Ok", data: {token, user} });
+            return response.status(200).send({ 'message': "ok", data: {token, user} });
         } catch (error) {
             return response.status(400).send({ status:'error', 'message': error });
         }
