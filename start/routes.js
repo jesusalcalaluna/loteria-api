@@ -24,5 +24,6 @@ Route.get('/', () => {
 
 Route.post('login', 'LoteriaController.login');
 Route.post('signup', 'LoteriaController.signup');
+Route.get('getUserScore', 'LoteriaController.getUserScore');
 
 

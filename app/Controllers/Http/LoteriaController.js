@@ -137,7 +137,8 @@ class LoteriaController {
 
         try {
             const token = await auth.attempt(user, password);
-            return response.status(200).send({ 'message': "ok", data: {token, user} });
+            const users = await User.all();
+            return response.status(200).send({ 'message': "ok", data: {token, user, users} });
         } catch (error) {
             return response.status(400).send({ status:'error', 'message': error });
         }
@@ -184,6 +185,7 @@ class LoteriaController {
       .where('user', name)
       .update({
         lottery_wins : userFinded.lottery_wins + 1,
+        total : userFinded.total + 1,
       })
 
     }
@@ -193,6 +195,7 @@ class LoteriaController {
       .where('user', name)
       .update({
         center_wins : userFinded.center_wins + 1,
+        total : userFinded.total + 1,
       })
 
     }
@@ -202,10 +205,23 @@ class LoteriaController {
       .where('user', name)
       .update({
         full_wins : userFinded.full_wins + 1,
+        total : userFinded.total + 1,
       })
-      
+
     }
 
+  }
+
+  async getUserScore({request, response}){
+    try {
+        const users = await User.query()
+        .select(['user', 'lottery_wins', 'center_wins', 'full_wins', 'total'])
+        .orderBy('total','DESC')
+        .fetch()
+        return response.status(200).send({ 'message': "ok", data: {users} });
+    } catch (error) {
+        return response.status(400).send({ status:'error', 'message': error });
+    }
   }
 
   async logout(){
