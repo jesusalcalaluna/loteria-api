@@ -9,6 +9,9 @@ class UserSchema extends Schema {
       table.increments()
       table.string('user', 80).notNullable().unique()
       table.string('password', 60).notNullable()
+      table.integer('lottery_wins').notNullable().defaultTo('0')
+      table.integer('center_wins').notNullable().defaultTo('0')
+      table.integer('full_wins').notNullable().defaultTo('0')
       table.timestamps()
     })
   }

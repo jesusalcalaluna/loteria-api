@@ -37,6 +37,7 @@ class LoteriaController {
       console.log('Alguien entro a la sala');
     });
 
+
     socket.on('leave_room', (room)=>{
       socket.leave(room)
       console.log('Alguien salio de la sala');
@@ -46,10 +47,12 @@ class LoteriaController {
 
     socket.on('loteria', ({room,player})=>{
       io.sockets.to(room).emit('loteria',  player);
+      console.log(player);
     });
 
     socket.on('centro', ({room,player})=>{
       io.sockets.to(room).emit('centro',  player);
+      console.log(player+sdfsasdas)
     });
 
     socket.on('llena', ({room,player})=>{
@@ -71,10 +74,11 @@ class LoteriaController {
             io.sockets.to(room).emit('play',  {data:cartas[rnd]});
             console.log(cartas);
             console.log(cartas[rnd]);
-            await cartas.splice(rnd, 1);
+            await cartas.splice(rnd, 5);
             console.log(i=i+1);
 
             if (cartas.length == 0) {
+
               var id = salasJugando.indexOf(room);
               salasJugando.splice(id, 1);
               io.sockets.to(room).emit('play',  {data:cartas[0]});
@@ -103,6 +107,8 @@ class LoteriaController {
     });
 
   }
+
+
 
   async login({ request, auth, response }) {
     const { user, password } = request.all();
@@ -163,6 +169,10 @@ class LoteriaController {
     return this.login(...arguments);
 
     //return response.status(200).send({message:'Has creado tu usuario con exito.'})
+}
+
+async logout(){
+
 }
 }
 
