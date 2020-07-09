@@ -47,16 +47,17 @@ class LoteriaController {
 
     socket.on('loteria', ({room,player})=>{
       io.sockets.to(room).emit('loteria',  player);
-      console.log(player);
+      this.updateUserScore(player, "lottery_wins")
     });
 
     socket.on('centro', ({room,player})=>{
       io.sockets.to(room).emit('centro',  player);
-      console.log(player+sdfsasdas)
+      this.updateUserScore(player, "center_wins")
     });
 
     socket.on('llena', ({room,player})=>{
       io.sockets.to(room).emit('llena',  player);
+      this.updateUserScore(player, "full_wins")
     });
 
     socket.on('play', (room)=>{
@@ -169,11 +170,47 @@ class LoteriaController {
     return this.login(...arguments);
 
     //return response.status(200).send({message:'Has creado tu usuario con exito.'})
-}
+  }
 
-async logout(){
+  static async updateUserScore(name, property){
+    const userFinded = await User
+    .query()
+    .where('user', name)
+    .first();
+    //console.log(name,property,userFinded.lottery_wins)
+    if(property == "lottery_wins"){
+      const user = await User
+      .query()
+      .where('user', name)
+      .update({
+        lottery_wins : userFinded.lottery_wins + 1,
+      })
 
-}
+    }
+    if(property == "center_wins"){
+      const user = await User
+      .query()
+      .where('user', name)
+      .update({
+        center_wins : userFinded.center_wins + 1,
+      })
+
+    }
+    if(property == "full_wins"){
+      const user = await User
+      .query()
+      .where('user', name)
+      .update({
+        full_wins : userFinded.full_wins + 1,
+      })
+      
+    }
+
+  }
+
+  async logout(){
+
+  }
 }
 
 module.exports = LoteriaController
