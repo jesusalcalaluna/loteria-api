@@ -43,8 +43,6 @@ class LoteriaController {
       console.log('Alguien salio de la sala');
     });
 
-
-
     socket.on('loteria', ({room,player})=>{
       io.sockets.to(room).emit('loteria',  player);
       this.updateUserScore(player, "lottery_wins")
@@ -65,7 +63,6 @@ class LoteriaController {
       console.log(room);
       console.log(salasJugando);
 
-
         intervalo = setInterval(
           async function() {
 
@@ -75,7 +72,7 @@ class LoteriaController {
             io.sockets.to(room).emit('play',  {data:cartas[rnd]});
             console.log(cartas);
             console.log(cartas[rnd]);
-            await cartas.splice(rnd, 5);
+            await cartas.splice(rnd, 1);
             console.log(i=i+1);
 
             if (cartas.length == 0) {
